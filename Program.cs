@@ -27,7 +27,7 @@ internal class FormatChecking
     }
 
     // Method for checking if the number is in range
-    //TODO: Number musí projít celé číslo po částech, rozdělené tečkami, number tedy musí být pole 4 čísel
+    
     public void IsInRange(string[] adress)
     {
         foreach (string adressPart in adress)
