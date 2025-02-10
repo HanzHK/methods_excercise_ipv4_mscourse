@@ -1,92 +1,102 @@
 ﻿using System;
 using System.Globalization;
+using System.Reflection;
+using System.Resources;
+using System.Threading;
 
-internal class Program
+namespace IPv4Check
 {
-    static void Main(string[] args)
+    internal class Program
     {
-        Console.WriteLine("Is your numbers combination valid for a IPV4?");
-
-       FormatChecking formatChecking = new FormatChecking();
-        formatChecking.UserInputAdress();
-    }
-
-}
-internal class FormatChecking
-{
-    public void UserInputAdress()
-    {
-        string inputIpvAdress = Console.ReadLine();
-
-        if (string.IsNullOrWhiteSpace(inputIpvAdress))
-        {
-            Console.WriteLine("Invalid (empty) input.");
-            return;
-        }
-
-        // Need to split the user input 
-        string[] adress = inputIpvAdress.Split(".");
-
         
-        if (isFourNumbers(adress) && IsInRange(adress) && HasNoLeadingZeros(adress))
+
+        static void Main(string[] args)
         {
-            Console.WriteLine("Adress IS valid IPv4!.");
-        }
-        else
-        {
-            Console.WriteLine("Adress IS NOT valid IPv4!");
+            ResourceManager rm = new ResourceManager("IPv4Check.Resources.Language", typeof(Program).Assembly);
+            Console.WriteLine(rm.GetString("WelcomeMessage"));
+
+            FormatChecking formatChecking = new FormatChecking();
+            formatChecking.UserInputAdress();
         }
 
     }
-
-    // Method for checking if the number is in range
-    
-    public bool IsInRange(string[] adress)
+    internal class FormatChecking
     {
-        foreach (string adressPart in adress)
+        ResourceManager rm = new ResourceManager("IPv4Check.Resources.Language", typeof(Program).Assembly);
+
+        public void UserInputAdress()
         {
-            if (!int.TryParse(adressPart, out int number) || number < 0 || number > 255)
+            string inputIpvAdress = Console.ReadLine();
+
+            if (string.IsNullOrWhiteSpace(inputIpvAdress))
+            {
+                Console.WriteLine(rm.GetString("msg_invalidEmpty"));
+                return;
+            }
+
+            // Need to split the user input to parts which can be further validated 
+            string[] adress = inputIpvAdress.Split(".");
+
+
+            if (isFourNumbers(adress) && IsInRange(adress) && HasNoLeadingZeros(adress))
+            {
+                Console.WriteLine(rm.GetString("msg_isValid"));
+            }
+            else
+            {
+                Console.WriteLine(rm.GetString("msg_isNotValid"));
+            }
+
+        }
+
+        // Method for checking if the number is in range
+
+        public bool IsInRange(string[] adress)
+        {
+            foreach (string adressPart in adress)
+            {
+                if (!int.TryParse(adressPart, out int number) || number < 0 || number > 255)
+                {
+                    return false;
+                }
+
+            }
+            return true;
+
+
+        }
+
+        // Method for checking if array length is four, thus can be accepted as IPv4
+        public bool isFourNumbers(string[] adress)
+        {
+            if (adress.Length == 4)
+            {
+                return true;
+            }
+            else
             {
                 return false;
             }
 
+
         }
-        return true;
 
 
-    }
-
-    // Method for checking if array length is four, thus can be accepted as IPv4
-    public bool isFourNumbers(string[] adress)
-    {
-        if (adress.Length == 4)
+        // Method for checking if parts of the adress starts with zeroes while allowing single zero to be used
+        public bool HasNoLeadingZeros(string[] adress)
         {
+            foreach (string adressPart in adress)
+            {
+                if (adressPart.Length > 1 && adressPart.StartsWith("0"))
+                {
+                    return false;
+                }
+            }
             return true;
         }
-        else
-        {
-            return false;
-        }
 
-        
     }
-
-
-    // Method for checking if parts of the adress starts with zeroes while allowing single zero to be used
-    public bool HasNoLeadingZeros(string[] adress)
-    {
-        foreach (string adressPart in adress)
-        {
-            if (adressPart.Length > 1 && adressPart.StartsWith("0"))
-            {
-                return false; 
-            }
-        }
-        return true; 
-    }
-
 }
-
 /*
  * 
 Requirements:
