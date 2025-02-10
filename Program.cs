@@ -18,6 +18,12 @@ internal class FormatChecking
     {
         string inputIpvAdress = Console.ReadLine();
 
+        if (string.IsNullOrWhiteSpace(inputIpvAdress))
+        {
+            Console.WriteLine("Invalid (empty) input.");
+            return;
+        }
+
         // Need to split the user input 
         string[] adress = inputIpvAdress.Split(".");
 
