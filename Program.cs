@@ -5,6 +5,8 @@ internal class Program
 {
     static void Main(string[] args)
     {
+        Console.WriteLine("Is your numbers combination valid for a IPV4?");
+
        FormatChecking formatChecking = new FormatChecking();
         formatChecking.UserInputAdress();
     }
@@ -19,34 +21,62 @@ internal class FormatChecking
         // Need to split the user input 
         string[] adress = inputIpvAdress.Split(".");
 
-        // Placeholder test if it splits correctly
-        foreach (string test in adress)
+        
+        if (isFourNumbers(adress) && IsInRange(adress) && HasNoLeadingZeros(adress))
         {
-            Console.WriteLine(test);
+            Console.WriteLine("Adress IS valid IPv4!.");
         }
+        else
+        {
+            Console.WriteLine("Adress IS NOT valid IPv4!");
+        }
+
     }
 
     // Method for checking if the number is in range
     
-    public void IsInRange(string[] adress)
+    public bool IsInRange(string[] adress)
     {
         foreach (string adressPart in adress)
         {
             if (!int.TryParse(adressPart, out int number) || number < 0 || number > 255)
             {
-                Console.WriteLine($"Část '{adressPart}' nevyhovuje (není číslo nebo není v rozsahu 0-255).");
-                return;
+                return false;
             }
 
         }
+        return true;
 
-        Console.WriteLine("Adresa je v platném rozsahu.");
 
     }
 
-    public bool isFourNumbers()
+    // Method for checking if array length is four, thus can be accepted as IPv4
+    public bool isFourNumbers(string[] adress)
     {
-        return false;
+        if (adress.Length == 4)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+
+        
+    }
+
+
+    // Method for checking if parts of the adress starts with zeroes while allowing single zero to be used
+    public bool HasNoLeadingZeros(string[] adress)
+    {
+        foreach (string adressPart in adress)
+        {
+            if (adressPart.Length > 1 && adressPart.StartsWith("0"))
+            {
+                return false; 
+            }
+        }
+        return true; 
     }
 
 }
@@ -54,9 +84,9 @@ internal class FormatChecking
 /*
  * 
 Requirements:
-- A valid IPv4 address consists of four numbers separated by dots
-- Each number must range from 0 to 255
-- Each number must not contain leading zeroes
+- A valid IPv4 address consists of four numbers separated by dots - done
+- Each number must range from 0 to 255 - done
+- Each number must not contain leading zeroes - done
 *
 */
 
